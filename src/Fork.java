@@ -7,7 +7,7 @@ public class Fork {
 
 	public Fork(String philosopherName) {
 		System.out.println("I am fork num " + forkNum + " and I am at "
-				+ philosopherName + " 's left side");
+				+ philosopherName + "'s left side");
 		forkNum = forkNumCounter;
 		forkNumCounter++;
 	}
@@ -35,8 +35,10 @@ public class Fork {
 
 	}
 
-	public synchronized void toBeDropped() {
+	public synchronized void toBeDropped(String philosopherName) {
 		this.taken = false;
+		System.out.println("I am fork num " + forkNum
+				+ " and I have been dropped by " + philosopherName);
 		notifyAll();
 	}
 

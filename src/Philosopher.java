@@ -54,6 +54,8 @@ public class Philosopher implements Runnable {
 				e.printStackTrace();
 			}
 
+			this.state = State.STARVING;
+
 			this.leftFork.toBeTaken(this.name);
 			this.rightFork.toBeTaken(this.name);
 
@@ -70,8 +72,8 @@ public class Philosopher implements Runnable {
 				e.printStackTrace();
 			}
 
-			this.leftFork.toBeDropped();
-			this.rightFork.toBeDropped();
+			this.leftFork.toBeDropped(name);
+			this.rightFork.toBeDropped(name);
 		}
 
 	}

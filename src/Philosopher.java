@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.util.Random;
 
 public class Philosopher implements Runnable {
@@ -5,11 +6,17 @@ public class Philosopher implements Runnable {
 	private Fork rightFork;
 	private State state;
 	Random randomFunc = new Random();
+	public static int numEat = 0;
 	private String name;
+	private PrintStream pw;
 
 	public Philosopher(String name) {
 		this.name = name;
-		leftFork = new Fork(name);
+	}
+
+	public void setPrintStream(PrintStream pw) {
+		this.pw = pw;
+		leftFork = new Fork(name, pw);
 	}
 
 	public Fork getLeftFork() {
@@ -40,14 +47,15 @@ public class Philosopher implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 
-		while (true) {
+		while (numEat < 10) {
 			this.state = State.THINKING;
 
+			int sleepTime = randomFunc.nextInt(256);
+
+			pw.println("I am " + this.name + " and I am thinking for "
+					+ sleepTime + " milliseconds");
+
 			try {
-				int sleepTime = randomFunc.nextInt(256);
-				System.out.println("I am " + this.name
-						+ " and I am thinking for " + sleepTime
-						+ " milliseconds");
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -60,12 +68,14 @@ public class Philosopher implements Runnable {
 			this.rightFork.toBeTaken(this.name);
 
 			this.state = State.EATING;
+			numEat++;
+
+			sleepTime = randomFunc.nextInt(256);
+
+			pw.println("I am " + this.name + " and I am eating for " + " "
+					+ sleepTime + " milliseconds");
 
 			try {
-				int sleepTime = randomFunc.nextInt(256);
-				System.out.println("I am " + this.name
-						+ " and I am eating for " + " " + sleepTime
-						+ " milliseconds");
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

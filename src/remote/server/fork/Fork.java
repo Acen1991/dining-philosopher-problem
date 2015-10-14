@@ -70,14 +70,14 @@ public class Fork implements Runnable {
 		try {
 			Socket socket = new ServerSocket(port).accept();
 			do {
-				process(socket);
+				unmarshal(socket);
 			} while (true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private synchronized void process(Socket socket) {
+	private synchronized void unmarshal(Socket socket) {
 		try {
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(

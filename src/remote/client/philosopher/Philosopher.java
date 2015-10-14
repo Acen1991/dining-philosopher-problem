@@ -54,8 +54,6 @@ public class Philosopher implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
 		while (numEat < 10) {
 			this.state = State.THINKING;
 

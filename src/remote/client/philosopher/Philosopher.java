@@ -61,7 +61,8 @@ public class Philosopher implements Runnable {
 
 			int sleepTime = randomFunc.nextInt(maxSpleepTime);
 
-			pw.println(this.name.toUpperCase() + "\t"+ this.state + "\t" + sleepTime);
+			pw.println(this.name.toUpperCase() + "\t" + this.state + "\t"
+					+ sleepTime);
 
 			try {
 				Thread.sleep(sleepTime);
@@ -79,8 +80,9 @@ public class Philosopher implements Runnable {
 			numEat++;
 
 			sleepTime = randomFunc.nextInt(maxSpleepTime);
-			
-			pw.println(this.name.toUpperCase() + "\t"+ this.state + "\t" + sleepTime);
+
+			pw.println(this.name.toUpperCase() + "\t" + this.state + "\t"
+					+ sleepTime);
 
 			try {
 				Thread.sleep(sleepTime);
@@ -104,17 +106,20 @@ public class Philosopher implements Runnable {
 
 			wrLeft.write(name.toUpperCase() + "\t" + takeOrDrop.toUpperCase()
 					+ "\t" + fork.getPort() + "\n");
-			
+
 			wrLeft.flush();
 
 			while (true) {
 				String resLeft = rdLeft.readLine();
 				if (resLeft != null) {
 					if (resLeft.toUpperCase().contains("ACK")) {
-						pw.println(name.toUpperCase()+"\t"+takeOrDrop.toUpperCase()+ "\t" + fork.getPort());
+						pw.println(name.toUpperCase() + "\t"
+								+ takeOrDrop.toUpperCase() + "\t"
+								+ fork.getPort());
 						break;
 					} else if (resLeft.toUpperCase().contains("SORRY")) {
-						pw.println(name + "\tcannot" + takeOrDrop.toUpperCase() + "\t" + fork.getPort());
+						pw.println(name + "\tcannot" + takeOrDrop.toUpperCase()
+								+ "\t" + fork.getPort());
 						Thread.yield();
 					}
 				}

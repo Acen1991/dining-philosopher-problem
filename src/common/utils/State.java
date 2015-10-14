@@ -1,4 +1,4 @@
-package remote.client.philosopher;
+package common.utils;
 
 public enum State {
 	THINKING, STARVING, EATING;

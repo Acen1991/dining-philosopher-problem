@@ -7,7 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Random;
+
+import common.utils.Action;
+import common.utils.State;
+import common.utils.StreamUtils;
 
 public class Philosopher implements Runnable {
 	private Socket leftFork;
@@ -71,8 +76,8 @@ public class Philosopher implements Runnable {
 
 			this.state = State.STARVING;
 
-			actionFork(this.leftFork, "take");
-			actionFork(this.rightFork, "take");
+			actOnFork(this.leftFork, Action.TAKE);
+			actOnFork(this.rightFork, Action.TAKE);
 
 			this.state = State.EATING;
 			numEat++;
@@ -89,35 +94,33 @@ public class Philosopher implements Runnable {
 				e.printStackTrace();
 			}
 
-			actionFork(this.leftFork, "drop");
-			actionFork(this.rightFork, "drop");
+			actOnFork(this.leftFork, Action.DROP);
+			actOnFork(this.rightFork, Action.DROP);
 		}
 
 	}
 
-	private void actionFork(Socket fork, String takeOrDrop) {
+	private synchronized void actOnFork(Socket fork, Action action) {
 		try {
-			BufferedWriter wrLeft = new BufferedWriter(new OutputStreamWriter(
-					fork.getOutputStream()));
-			BufferedReader rdLeft = new BufferedReader(new InputStreamReader(
-					fork.getInputStream()));
+			BufferedWriter bufferedWriter = new BufferedWriter(
+					new OutputStreamWriter(fork.getOutputStream()));
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(fork.getInputStream()));
 
-			wrLeft.write(name.toUpperCase() + "\t" + takeOrDrop.toUpperCase()
-					+ "\t" + fork.getPort() + "\n");
-
-			wrLeft.flush();
+			StreamUtils.writeIntoStreamAndLog(pw, bufferedWriter,
+					name.toUpperCase() + "\tWANT TO " + action.name() + "\t"
+							+ fork.getPort() + "\n");
 
 			while (true) {
-				String resLeft = rdLeft.readLine();
+				String resLeft = bufferedReader.readLine();
 				if (resLeft != null) {
 					if (resLeft.toUpperCase().contains("ACK")) {
-						pw.println(name.toUpperCase() + "\t"
-								+ takeOrDrop.toUpperCase() + "\t"
-								+ fork.getPort());
+						pw.println(name.toUpperCase() + "\t" + action.name()
+								+ "\t" + fork.getPort());
 						break;
 					} else if (resLeft.toUpperCase().contains("SORRY")) {
-						pw.println(name + "\tcannot" + takeOrDrop.toUpperCase()
-								+ "\t" + fork.getPort());
+						pw.println(name.toUpperCase() + "\tcannot"
+								+ action.name() + "\t" + fork.getPort());
 						Thread.yield();
 					}
 				}
@@ -126,12 +129,6 @@ public class Philosopher implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "Philosopher [leftFork=" + leftFork + ", rightFork=" + rightFork
-				+ ", name=" + name + "]";
 	}
 
 }

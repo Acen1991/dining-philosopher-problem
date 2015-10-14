@@ -1,6 +1,10 @@
+package remote.client.philosopher;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,24 +13,27 @@ public class PhilosopherDilemmaApp {
 	public static void main(String[] args) throws InterruptedException,
 			IOException {
 
-		int numPhilosopher = 5;
-		Philosopher[] philosophers = new Philosopher[numPhilosopher];
-		String[] philosophersNames = new String[] { "Epicure", "Cicéron",
-				"Platon", "Aristote", "Socrate" };
-
+		// Handle printStream
 		PrintStream printStream;
-
 		if (args[0].equals("console")) {
 			printStream = System.out;
 		} else if (args[0] != null) {
-			printStream = new PrintStream(new FileOutputStream(args[0].toString()));
+			printStream = new PrintStream(new FileOutputStream(
+					args[0].toString()));
 		} else {
 			throw new IllegalStateException(
 					"you should provide a parameter (console|file) to the java app");
 		}
 
+		int numPhilosopher = 5;
+		Philosopher[] philosophers = new Philosopher[numPhilosopher];
+		String[] philosophersNames = new String[] { "Epicure", "Cicéron",
+				"Platon", "Aristote", "Socrate" };
+		InetAddress inetAddr = InetAddress.getLocalHost();
+
 		for (int i = 0; i < numPhilosopher; i++) {
-			philosophers[i] = new Philosopher(philosophersNames[i]);
+			philosophers[i] = new Philosopher(philosophersNames[i], new Socket(
+					inetAddr, 50000 + i));
 			philosophers[i].setPrintStream(printStream);
 			if (i != 0) {
 				philosophers[i].setRightFork(philosophers[i - 1].getLeftFork());
@@ -42,7 +49,6 @@ public class PhilosopherDilemmaApp {
 			threadpool.add(threadPerPhilosopher);
 
 			threadPerPhilosopher.start();
-
 		}
 
 		for (Thread t : threadpool) {
@@ -54,4 +60,5 @@ public class PhilosopherDilemmaApp {
 
 		printStream.close();
 	}
+
 }
